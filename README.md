@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="icons/border-48.png" alt="Logo"/>
   <h1>MyEpitechPercentage</h1>
   <br>
   <strong>Brings percentage to https://my.epitech.eu !</strong>
