@@ -4,27 +4,40 @@ function processTestBadges() {
     );
 
     badges.forEach((badge) => {
-        // Skip if the percentage is already there
-        if (badge.dataset.testPercentageAdded) return;
-
         const text = badge.textContent;
 
         // Match pattern a/b TESTS with optional whitespace around the slash
         const match = text.match(/(\d+)\s?\/\s?(\d+) TESTS/);
-        if (!match) return;
+
+        const existingSpan = badge.querySelector("[data-test-percentage-span]");
+
+        if (!match) {
+            if (existingSpan) existingSpan.remove();
+            return;
+        }
 
         const a = parseFloat(match[1]);
         const b = parseFloat(match[2]);
 
         let percentage = ((a / b) * 100).toFixed(1);
 
-        if (percentage[percentage.length - 1] === "0") {
+        if (percentage.endsWith("0")) {
             // Remove trailing .0 for whole numbers
             percentage = percentage.slice(0, -2);
         }
 
-        badge.textContent = `${text} | ${percentage}%`;
-        badge.dataset.testPercentageAdded = "true";
+        const newText = ` | ${percentage}%`;
+
+        if (existingSpan) {
+            if (existingSpan.textContent !== newText) {
+                existingSpan.textContent = newText;
+            }
+        } else {
+            const percentageSpan = document.createElement("span");
+            percentageSpan.textContent = newText;
+            percentageSpan.dataset.testPercentageSpan = "true";
+            badge.appendChild(percentageSpan);
+        }
     });
 }
 
